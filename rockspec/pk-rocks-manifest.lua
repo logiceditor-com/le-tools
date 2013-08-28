@@ -6,6 +6,7 @@
 
 local ROCKS =
 {
+  { "rockspec/le-tools.pk-call-lua-module-scm-1.rockspec" };
   { "rockspec/le-tools.pk-lua-interpreter-scm-1.rockspec" };
 }
 
