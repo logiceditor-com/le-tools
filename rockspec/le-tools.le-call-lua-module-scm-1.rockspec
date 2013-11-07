@@ -1,11 +1,11 @@
-package = "le-tools.pk-call-lua-module"
+package = "le-tools.le-call-lua-module"
 version = "scm-1"
 source = {
    url = "git://github.com/logiceditor-com/le-tools.git",
    branch = "master"
 }
 description = {
-   summary = "pk-call-lua-module Tool",
+   summary = "le-call-lua-module Tool",
    homepage = "https://github.com/logiceditor-com/le-tools",
    license = "MIT/X11",
    maintainer = "LogicEditor Team <team@logiceditor.com>"
@@ -17,13 +17,13 @@ dependencies = {
   "lua >= 5.1",
   "lua-nucleo",
   "lua-aplicado",
-  "le-tools.pk-lua-interpreter >= 0.0.1",
+  "le-tools.le-lua-interpreter >= 0.0.1",
 }
 build = {
   type = "none",
   install = {
     bin = {
-      "bin/pk-call-lua-module"
+      "bin/le-call-lua-module"
     }
   }
 }

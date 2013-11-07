@@ -1,11 +1,11 @@
-package = "le-tools.pk-lua-interpreter"
+package = "le-tools.le-lua-interpreter"
 version = "scm-1"
 source = {
    url = "git://github.com/logiceditor-com/le-tools.git",
    branch = "master"
 }
 description = {
-   summary = "pk-lua-interpreter Tool",
+   summary = "le-lua-interpreter Tool",
    homepage = "https://github.com/logiceditor-com/le-tools",
    license = "MIT/X11",
    maintainer = "LogicEditor Team <team@logiceditor.com>"
@@ -19,7 +19,7 @@ build = {
   type = "none",
   install = {
     bin = {
-      "bin/pk-lua-interpreter"
+      "bin/le-lua-interpreter"
     }
   }
 }
