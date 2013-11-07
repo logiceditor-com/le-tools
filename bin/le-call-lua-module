@@ -1,7 +1,7 @@
-#! /usr/bin/env pk-lua-interpreter
+#! /usr/bin/env le-lua-interpreter
 
 --------------------------------------------------------------------------------
--- pk-call-lua-module: run arbitrary function from Lua module in pk environment
+-- le-call-lua-module: run arbitrary function from Lua module in LE environment
 --------------------------------------------------------------------------------
 
 pcall(require, 'luarocks.require') -- Ignoring errors
