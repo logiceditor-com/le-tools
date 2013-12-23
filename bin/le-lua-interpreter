@@ -2,18 +2,20 @@
 
 set -e
 
-LUA="$(which luajit2)" || true
-if [ -z "${LUA}" ]; then
-  LUA="$(which luajit)" || true
+if [ -z "${LE_LUA_INTERPRETER}" ]; then
+  LE_LUA_INTERPRETER="$(which luajit2)" || true
+  if [ -z "${LE_LUA_INTERPRETER}" ]; then
+    LE_LUA_INTERPRETER="$(which luajit)" || true
 
-  if [ -z "${LUA}" ]; then
-    LUA="$(which lua)" || true
+    if [ -z "${LE_LUA_INTERPRETER}" ]; then
+      LE_LUA_INTERPRETER="$(which lua)" || true
 
-    if [ -z "${LUA}" ]; then
-      echo "Error: luajit2, luajit and lua executables not found" >&2
-      exit 1
+      if [ -z "${LE_LUA_INTERPRETER}" ]; then
+        echo "Error: luajit2, luajit and lua executables not found" >&2
+        exit 1
+      fi
     fi
   fi
 fi
 
-exec /usr/bin/env ${LUA} "$@"
+exec /usr/bin/env ${LE_LUA_INTERPRETER} "$@"
