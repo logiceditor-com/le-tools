@@ -1,4 +1,4 @@
-#! /usr/bin/env le-lua-interpreter
+#! /usr/local/bin/le-lua-interpreter
 
 --------------------------------------------------------------------------------
 -- le-call-lua-module: run arbitrary function from Lua module in LE environment
