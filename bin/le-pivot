@@ -1,0 +1,21 @@
+#! /bin/bash
+
+set -e
+
+ROOT="${BASH_SOURCE[0]}";
+if([ -h "${ROOT}" ]) then
+  while([ -h "${ROOT}" ]) do ROOT=$(readlink "${ROOT}"); done
+fi
+ROOT=$(cd $(dirname "${ROOT}")/../ && pwd)
+
+if [ -d "${ROOT}/src" ]; then
+  PRIVATE_MODULES_PATH="${ROOT}/src/?.lua"
+else
+  PRIVATE_MODULES_PATH=""
+fi
+
+le-call-lua-module \
+  "${PRIVATE_MODULES_PATH}" \
+  "le-tools.pivot.run" \
+  "run" \
+  "$@"
