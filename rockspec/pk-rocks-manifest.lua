@@ -8,6 +8,7 @@ local ROCKS =
 {
   { "rockspec/le-tools.le-call-lua-module-scm-1.rockspec" };
   { "rockspec/le-tools.le-lua-interpreter-scm-1.rockspec" };
+  { "rockspec/le-tools.le-pivot-scm-1.rockspec" };
 }
 
 return
