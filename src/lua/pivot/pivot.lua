@@ -224,6 +224,8 @@ do
     end
     assert(rules[1], "must specify at least one column rule")
 
+    -- TODO: rewrite tests since process now returns Lua table
+    --       https://redmine-tmp.iphonestudio.ru/issues/4143-#note1
     return process
 
   end
