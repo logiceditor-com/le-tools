@@ -37,14 +37,13 @@ local tpretty
 local create_pivot_processor
 do
   local rules
-  local step, print_or_step
-  local output
+  local step, collect
 
   local group_sort_by_sum_fn = function(lhs, rhs)
     return lhs.value > rhs.value
   end
 
-  step = function(dataset, rule_index, prefix)
+  step = function(dataset, rule_index, output)
 
     -- get column rule
     local rule = rules[rule_index]
@@ -95,14 +94,26 @@ do
           dataset[index] = false
           dataset.value = dataset.value - group[j].value
         end
-        print_or_step(group, rule_index + 1, prefix, group.key, ("%3.4f%%"):format(value))
+        collect(
+            group,
+            rule_index + 1,
+            output,
+            group.key,
+            ("%3.4f%%"):format(value)
+          )
         i = i + 1
       end
       -- append Others row, if specified
       if rule.others then
-        -- drill-down one step deeper using original dataset without extracted rows,
-        -- or output if column rules ended
-        print_or_step(dataset, rule_index + 1, prefix, rule.others, ("%3.4f%%"):format(100 - sum))
+        -- drill-down one step deeper using original dataset
+        -- without extracted rows
+        collect(
+            dataset,
+            rule_index + 1,
+            output,
+            rule.others,
+            ("%3.4f%%"):format(100 - sum)
+          )
       end
     else
       -- count of rows to collect can not exceed total number of rows in group
@@ -122,23 +133,40 @@ do
           dataset[index] = false
           dataset.value = dataset.value - group[j].value
         end
-        print_or_step(group, rule_index + 1, prefix, group.key, group.value)
+        collect(group, rule_index + 1, output, group.key, group.value)
       end
       -- append Others row, if specified
       if rule.others then
-        -- drill-down one step deeper using original dataset without extracted rows,
-        -- or output if column rules ended
-        print_or_step(dataset, rule_index + 1, prefix, rule.others, dataset_value - sum)
+        -- drill-down one step deeper using original dataset
+        -- without extracted rows
+        collect(
+            dataset,
+            rule_index + 1,
+            output,
+            rule.others,
+            dataset_value - sum
+          )
       end
     end
 
+    return output
+
   end
 
-  print_or_step = function(dataset, rule_index, prefix, key, value)
+  collect = function(dataset, rule_index, output, key, value)
     if rule_index > #rules then
-      output(prefix .. key .. "\t" .. value .. "\n")
+      output[#output + 1] =
+      {
+        key = key;
+        value = value;
+      }
     else
-      step(dataset, rule_index, prefix .. key .. "\t" .. value .. "\t")
+      output[#output + 1] =
+      {
+        key = key;
+        value = value;
+        children = step(dataset, rule_index, { });
+      }
     end
   end
 
@@ -168,16 +196,9 @@ do
       end
     end
 
-    -- create output buffer
-    local concat
-    output, concat = make_concatter()
-
     -- start pivoting of full dataset from column definition 1 with no prefix
     -- NB: it will recursively call itself until the whole dataset processed
-    step(dataset, 1, "")
-
-    -- return output buffer
-    return concat()
+    return step(dataset, 1, { })
 
   end
 

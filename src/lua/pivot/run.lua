@@ -14,11 +14,17 @@ local create_pivot_processor
         'create_pivot_processor'
       }
 
+local tpretty
+      = import 'lua-nucleo/tpretty.lua'
+      {
+        'tpretty'
+      }
+
 --------------------------------------------------------------------------------
 
 local run = function(...)
   local pivot = create_pivot_processor({...})()
-  io.write(pivot)
+  io.write(tpretty(pivot), "\n")
 end
 
 --------------------------------------------------------------------------------
