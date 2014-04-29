@@ -4,26 +4,26 @@
 -- Copyright (c) le-tools authors (see file `COPYRIGHT` for the license)
 --------------------------------------------------------------------------------
 
-require 'lua-nucleo'
+require "lua-nucleo"
 
 local table_sort, table_remove = table.sort, table.remove
 
 local is_table
-      = import 'lua-nucleo/type.lua'
+      = import "lua-nucleo/type.lua"
       {
-        'is_table'
+        "is_table"
       }
 
 local split_by_char
-      = import 'lua-nucleo/string.lua'
+      = import "lua-nucleo/string.lua"
       {
-        'split_by_char'
+        "split_by_char"
       }
 
 local tpretty
-      = import 'lua-nucleo/tpretty.lua'
+      = import "lua-nucleo/tpretty.lua"
       {
-        'tpretty'
+        "tpretty"
       }
 
 --------------------------------------------------------------------------------
