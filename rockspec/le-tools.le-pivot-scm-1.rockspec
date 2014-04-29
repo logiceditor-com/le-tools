@@ -23,6 +23,7 @@ build = {
       "bin/le-pivot"
     },
     lua = {
+      ["le-tools.pivot.format"] = "src/lua/pivot/format.lua";
       ["le-tools.pivot.pivot"] = "src/lua/pivot/pivot.lua";
       ["le-tools.pivot.run"] = "src/lua/pivot/run.lua";
     }
