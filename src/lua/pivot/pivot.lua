@@ -20,12 +20,6 @@ local split_by_char
         'split_by_char'
       }
 
-local make_concatter
-      = import 'lua-nucleo/string.lua'
-      {
-        'make_concatter'
-      }
-
 local tpretty
       = import 'lua-nucleo/tpretty.lua'
       {
