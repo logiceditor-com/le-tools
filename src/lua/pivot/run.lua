@@ -14,6 +14,12 @@ local create_pivot_processor
         'create_pivot_processor'
       }
 
+local make_concatter
+      = import 'lua-nucleo/string.lua'
+      {
+        'make_concatter'
+      }
+
 local tiwalk
       = import 'lua-nucleo/table-utils.lua'
       {
@@ -66,6 +72,31 @@ local run = function(format, ...)
       to_json(pivot[i], i)
     end
     io.write("]", "\n")
+  -- tree
+  elseif format == "html" then
+    local cat, concat = make_concatter()
+    local function to_tree(elem, prefix)
+      local output = function(...)
+        local args = {...}
+        for i = 1, #args do
+          cat(prefix .. args[i])
+        end
+      end
+      output(
+          '<li class="tree">',
+          "\t" .. '<span class="tree-item">' .. elem.key .. " " .. elem.value .. '</span>'
+        )
+      if elem.children and #elem.children > 0 then
+        output("\t" .. '<ul class="tree">')
+        tiwalk(to_tree, elem.children, prefix .. "\t\t")
+        output("\t" .. '</ul>')
+      end
+      output('</li>')
+    end
+    cat('<ul class="tree">')
+    tiwalk(to_tree, pivot, "\t")
+    cat('</ul>')
+    io.write(concat("\n"))
   -- text with node paths expansion
   else
     local function to_text(elem, prefix)
