@@ -51,15 +51,18 @@ do
         local key = row[rule.column]
         local group = groups[key]
         if not group then
-          group = { }
-          group.key = key
+          group =
+          {
+            key = key;
+            value = 0;
+          }
           -- NB: index group by key and by position,
           --     to allow both fast access and use of table.sort
           groups[#groups + 1] = group
           groups[key] = group
         end
         -- calculate sum over group
-        group.value = (group.value or 0) + row.value
+        group.value = group.value + row.value
         -- collect relevant rows
         group[#group + 1] = i
       end
