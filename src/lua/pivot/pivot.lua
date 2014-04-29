@@ -78,8 +78,10 @@ do
       -- calculate absolute limit for sum of rows we should collect
       local factor = 100 / dataset_value
       -- collect top rows
-      local i = 1
-      while sum < rule.count and i < #groups do
+      for i = 1, #groups do
+        if sum > rule.count then
+          break
+        end
         -- account row in sum
         local group = groups[i]
         local value = factor * group.value
@@ -98,7 +100,6 @@ do
             group.key,
             ("%3.4f%%"):format(value)
           )
-        i = i + 1
       end
       -- append Others row, if specified
       if rule.others then
