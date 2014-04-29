@@ -153,18 +153,9 @@ do
 
   collect = function(dataset, rule_index, output, key, value)
     if rule_index > #rules then
-      output[#output + 1] =
-      {
-        key = key;
-        value = value;
-      }
+      output[#output + 1] = {key, value}
     else
-      output[#output + 1] =
-      {
-        key = key;
-        value = value;
-        children = step(dataset, rule_index, { });
-      }
+      output[#output + 1] = {key, value, step(dataset, rule_index, { })}
     end
   end
 
