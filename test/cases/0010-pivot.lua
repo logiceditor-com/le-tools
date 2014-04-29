@@ -13,6 +13,12 @@ local create_pivot_processor,
         "create_pivot_processor"
       }
 
+local format
+      = import "le-tools/pivot/format.lua"
+      {
+        "format"
+      }
+
 local ensure,
       ensure_equals,
       ensure_fails_with_substring,
@@ -69,35 +75,39 @@ test "create-pivot-processor" (function(env)
 
 end)
 
+local run = function(args, input)
+  return format(create_pivot_processor(args)(input), "text")
+end
+
 test "pivot-processor-simple" (function(env)
 
   ensure_equals(
       "returns nothing on for empty dataset",
-      create_pivot_processor({"1=1"})({ }),
+      run({"1=1"}, { }),
       ""
     )
 
   ensure_equals(
       "returns Others 0 on for empty dataset if others are requested",
-      create_pivot_processor({"1=1+"})({ }),
+      run({"1=1+"}, { }),
       "Others\t0\n"
     )
 
   ensure_equals(
       "honors others custom label",
-      create_pivot_processor({"1=1+Autres"})({ }),
+      run({"1=1+Autres"}, { }),
       "Autres\t0\n"
     )
 
   ensure_equals(
       "honors selection by percentage",
-      create_pivot_processor({"1=1%+"})({ }),
+      run({"1=1%+"}, { }),
       "Others\t100.0000%\n"
     )
 
   ensure_equals(
       "can select more than one column",
-      create_pivot_processor({"1=1%+", "2=1+Otros"})({ }),
+      run({"1=1%+", "2=1+Otros"}, { }),
       "Others\t100.0000%\tOtros\t0\n"
     )
 
@@ -117,7 +127,7 @@ test "pivot-processor-yields-description" (function(env)
       {1267688, "Chrome", "33.0.1750", "Windows XP", "", "Other", ""};
       {1151396, "Opera", "12.16", "Windows 7", "", "Other", ""};
     }
-    return create_pivot_processor(args)(dataset)
+    return run(args, dataset)
   end
 
   local pivot2 = function(args)
@@ -127,7 +137,7 @@ test "pivot-processor-yields-description" (function(env)
       {1439417, "Yandex Browser", "14.2.1700", "Windows 7", "", "32-bit", ""};
       {1267688, "Chrome", "33.0.1750", "Windows XP", "", "32-bit", ""};
     }
-    return create_pivot_processor(args)(dataset)
+    return run(args, dataset)
   end
 
   ensure_equals(
@@ -167,7 +177,7 @@ test "pivot-processor-example-4090-27" (function(env)
       {1267688, "Chrome", "33.0.1750", "Windows XP", "", "Other", ""};
       {1151396, "Opera", "12.16", "Windows 7", "", "Other", ""};
     }
-    return create_pivot_processor(args)(dataset)
+    return run(args, dataset)
   end
 
   ensure_equals(
@@ -221,7 +231,7 @@ test "pivot-processor-example-4090-28" (function(env)
       {5, "beta", "blue", "f"};
       {4, "beta", "green", "g"};
     }
-    return create_pivot_processor(args)(dataset)
+    return run(args, dataset)
   end
 
   ensure_equals(
@@ -251,7 +261,7 @@ test "pivot-processor-example-4090-32" (function(env)
       {5, "beta", "blue", "f"};
       {4, "beta", "green", "g"};
     }
-    return create_pivot_processor(args)(dataset)
+    return run(args, dataset)
   end
 
   ensure_equals(
@@ -278,7 +288,7 @@ test "pivot-processor-example-4090-33" (function(env)
       {5, "beta", "blue", "f"};
       {4, "beta", "green", "g"};
     }
-    return create_pivot_processor(args)(dataset)
+    return run(args, dataset)
   end
 
   ensure_equals(
@@ -306,7 +316,7 @@ test "pivot-processor-example-4090-35" (function(env)
       {5, "beta", "blue", "f"};
       {4, "beta", "green", "g"};
     }
-    return create_pivot_processor(args)(dataset)
+    return run(args, dataset)
   end
 
   ensure_equals(
@@ -334,7 +344,7 @@ test "pivot-processor-example-4090-39" (function(env)
       {5, "beta", "blue", "four", "f"};
       {4, "beta", "green", "five", "g"};
     }
-    return create_pivot_processor(args)(dataset)
+    return run(args, dataset)
   end
 
   ensure_equals(
