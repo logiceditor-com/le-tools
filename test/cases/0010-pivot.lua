@@ -13,10 +13,11 @@ local create_pivot_processor,
         "create_pivot_processor"
       }
 
-local format
+local to_text,
+      format_exports
       = import "le-tools/pivot/format.lua"
       {
-        "format"
+        "to_text"
       }
 
 local ensure,
@@ -30,6 +31,12 @@ local ensure,
         "ensure_fails_with_substring",
         "ensure_is"
       }
+
+--------------------------------------------------------------------------------
+
+local run = function(args, input)
+  return to_text(create_pivot_processor(args)(input))
+end
 
 --------------------------------------------------------------------------------
 
@@ -74,10 +81,6 @@ test "create-pivot-processor" (function(env)
     )
 
 end)
-
-local run = function(args, input)
-  return format(create_pivot_processor(args)(input), "text")
-end
 
 test "pivot-processor-simple" (function(env)
 
