@@ -116,6 +116,31 @@ test "pivot-processor-simple" (function(env)
 
 end)
 
+test "pivot-processor-in-percent" (function(env)
+
+  local pivot = function(args)
+    local dataset =
+    {
+      {1, "alpha", "red", "one", "a"};
+      {1, "alpha", "blue", "one", "b"};
+      {1, "alpha", "blue", "two", "c"};
+      {3, "alpha", "green", "three", "d"};
+      {6, "beta", "red", "four", "e"};
+      {5, "beta", "blue", "four", "f"};
+      {4, "beta", "green", "five", "g"};
+    }
+    return run(args, dataset)
+  end
+
+  ensure_equals(
+      "honors output forced to be in percent",
+      pivot({"1=1+%"}),
+         "beta\t71.4286%\n"
+      .. "Others\t28.5714%\n"
+    )
+
+end)
+
 --
 -- examples from description #4090
 --
