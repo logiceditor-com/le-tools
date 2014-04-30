@@ -6,6 +6,7 @@
 
 require "lua-nucleo"
 
+local math_min = math.min
 local table_sort, table_remove = table.sort, table.remove
 
 local is_table
@@ -74,12 +75,19 @@ do
     -- pick top rows according to column rule
     local dataset_value = dataset.value
     local sum = 0
-    if rule.by_percent then
-      -- calculate absolute limit for sum of rows we should collect
+    if rule.by_percent or rule.in_percent then
+      -- percentage factor
       local factor = 100 / dataset_value
+      -- count of rows to collect
+      local count = #groups
+      if rule.in_percent then
+        count = math_min(rule.count, #groups)
+      end
       -- collect top rows
-      for i = 1, #groups do
-        if sum > rule.count then
+      for i = 1, count do
+        -- we here check either top rows count not exceeds or sum not exceeds
+        -- the rule limit
+        if not rule.in_percent and sum > rule.count then
           break
         end
         -- account row in sum
@@ -93,12 +101,13 @@ do
           dataset[index] = false
           dataset.value = dataset.value - group[j].value
         end
+        -- drill-down one step deeper using extracted row as dataset
         collect(
             group,
-            rule_index + 1,
+            rule_index,
             output,
             group.key,
-            ("%3.4f%%"):format(value)
+            value
           )
       end
       -- append Others row, if specified
@@ -107,18 +116,15 @@ do
         -- without extracted rows
         collect(
             dataset,
-            rule_index + 1,
+            rule_index,
             output,
             rule.others,
-            ("%3.4f%%"):format(100 - sum)
+            100 - sum
           )
       end
     else
       -- count of rows to collect can not exceed total number of rows in group
-      local count = rule.count
-      if count > #groups then
-        count = #groups
-      end
+      local count = math_min(rule.count, #groups)
       -- collect 'count' top rows
       for i = 1, count do
         -- account row in sum
@@ -131,7 +137,8 @@ do
           dataset[index] = false
           dataset.value = dataset.value - group[j].value
         end
-        collect(group, rule_index + 1, output, group.key, group.value)
+        -- drill-down one step deeper using extracted row as dataset
+        collect(group, rule_index, output, group.key, group.value)
       end
       -- append Others row, if specified
       if rule.others then
@@ -139,7 +146,7 @@ do
         -- without extracted rows
         collect(
             dataset,
-            rule_index + 1,
+            rule_index,
             output,
             rule.others,
             dataset_value - sum
@@ -152,11 +159,17 @@ do
   end
 
   collect = function(dataset, rule_index, output, key, value)
-    if rule_index > #rules then
-      output[#output + 1] = {key, value}
-    else
-      output[#output + 1] = {key, value, step(dataset, rule_index, { })}
+    local children
+    if rule_index < #rules then
+      children = step(dataset, rule_index + 1, { })
     end
+    output[#output + 1] =
+    {
+      key,
+      value,
+      children,
+      rules[rule_index]
+    }
   end
 
   -- NB: if input is table its content is replaced with falses,
@@ -196,14 +209,15 @@ do
     -- parse column rules
     rules = { }
     for i = 1, #args do
-      local column, count, by_percent, others =
-          args[i]:match("(%d+)=(%d+)(%%?)(%+?%w*)")
+      local column, count, by_percent, others, in_percent =
+          args[i]:match("(%d+)=(%d+)(%%?)(%+?%w*)(%%?)")
       assert(column, args[i] .. ": bad rule format");
       rules[#rules + 1] =
         {
           column = tonumber(column);
           count = tonumber(count);
           by_percent = by_percent == "%";
+          in_percent = in_percent == "%";
           others = others == "+"
               and "Others"
               or (others:find("+") == 1
