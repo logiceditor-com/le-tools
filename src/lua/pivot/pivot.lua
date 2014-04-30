@@ -183,6 +183,7 @@ do
     dataset.value = 0
 
     -- use input table directly or parse stdin
+    local num_fields = 0
     if is_table(input) then
       for line = 1, #input do
         local fields = input[line]
@@ -190,6 +191,10 @@ do
         fields.value = tonumber(table_remove(fields, 1))
         dataset[fields.key] = fields
         dataset.value = dataset.value + fields.value
+        -- NB: maximum number of fields seen, to apply rules to all of them
+        if #fields > num_fields then
+          num_fields = #fields
+        end
       end
     else
       for line in io.lines() do
@@ -198,6 +203,10 @@ do
         fields.value = tonumber(table_remove(fields, 1))
         dataset[fields.key] = fields
         dataset.value = dataset.value + fields.value
+        -- NB: maximum number of fields seen, to apply rules to all of them
+        if #fields > num_fields then
+          num_fields = #fields
+        end
       end
     end
 
