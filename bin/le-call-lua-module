@@ -13,6 +13,11 @@ require 'lua-nucleo.strict'
 
 require = import 'lua-nucleo/require_and_declare.lua' { 'require_and_declare' }
 
+
+-- declare _DEBUG to avoid error with luaposix 34.0.1
+declare '_DEBUG'
+require 'posix'
+
 --------------------------------------------------------------------------------
 
 import 'lua-aplicado/common_logging.lua' { 'create_common_stdout_logging' } ()
