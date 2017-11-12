@@ -9,13 +9,6 @@ local load_tools_cli_data_schema
       {
         'load_tools_cli_data_schema'
       }
---[[
-local common_tool_config_schema_chunk
-      = import 'pk-tools.project-config.schema-common'
-      {
-        'common_tool_config_schema_chunk'
-      }
-]]
 local create_config_schema
 
 do
